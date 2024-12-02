@@ -23,15 +23,15 @@ ans1 = 0
 un_safe = []
 for report in l:
     ans1 += helper(report, un_safe)
+print(ans1)
 
 ans2 = 0
 useless = []
 for report in un_safe:
     for i in range(len(report)):
-        temp = report[:i] + report[i + 1:]
+        temp = report[:i] + report[i+1:]
         if helper(temp, useless):
             ans2 += 1
             break
 
 print(ans1 + ans2)
-
