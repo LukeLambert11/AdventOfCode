@@ -1,5 +1,4 @@
-from collections import defaultdict
-import itertools
+from collections import defaultdict, deque
 
 rules = defaultdict(set)
 updates = []
@@ -43,14 +42,35 @@ for update in updates:
 
 print(ans)
 
-#way too slow did not realize the length can be > 5
+def topo(update):
+
+    pages = set(update)
+
+    adj = defaultdict(list)
+    in_degree = {p: 0 for p in pages}
+
+    for y in pages:
+        for x in rules[y]:
+            if x in pages:
+                adj[x].append(y)
+                in_degree[y] += 1
+
+    q = deque([p for p in pages if in_degree[p] == 0])
+    order = []
+
+    while q:
+        node = q.popleft()
+        order.append(node)
+        for neighbor in adj[node]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                q.append(neighbor)
+
+    return int(order[len(order)//2])
+
+
 ans2 = 0
 for update in incorrectUpdates:
-    permutations = list(itertools.permutations(update))
-    curr = 0
-    for perm in permutations:
-        curr = checkValid(perm)
-        if curr != 0:
-            ans2 += curr
-            break
+   ans2 += topo(update)
+
 print(ans2)
