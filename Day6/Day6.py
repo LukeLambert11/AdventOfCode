@@ -3,6 +3,7 @@ from copy import deepcopy
 
 l = []
 l.append(['?'] * 130)
+#should just use .strip() but commited to it like this today
 with open("Day6.txt", "r") as file:
     for i, line in enumerate(file):
         for j, char in enumerate(line):
@@ -69,10 +70,11 @@ def helper(grid, guard_location, curr_index):
             guard_location[0] += row
             guard_location[1] += col
             if next_grid == '.' or next_grid == '^':
-                grid[guard_location[0]][guard_location[1]] = 'Y'
+                grid[guard_location[0]][guard_location[1]] = 'Y' #Y easier for testing
 
 ans2 = 0
 
+#cannot place right in front of start so start from 1
 for loc in path[1:]:
     # print("\n\n")
     row, col, index = loc
@@ -85,4 +87,3 @@ for loc in path[1:]:
 
 print(ans2)
 
-#2140
