@@ -74,16 +74,28 @@ def helper(grid, guard_location, curr_index):
 
 ans2 = 0
 
-#cannot place right in front of start so start from 1
-for loc in path[1:]:
-    # print("\n\n")
-    row, col, index = loc
-    # print(row, col, index)
-    temp = deepcopy(g)
-    temp[row + moves[index][0]][col + moves[index][1]] = "#"
+# #cannot place right in front of start so start from 1
+# for loc in path[1:]:
+#     # print("\n\n")
+#     row, col, index = loc
+#     # print(row, col, index)
+#     temp = deepcopy(g)
+#     temp[row + moves[index][0]][col + moves[index][1]] = "#"
+#
+#
+#     ans2 += helper(temp, [row, col], index)
 
+for i in range(1, len(g) - 1):
+    for j in range(1, len(g[i]) - 1):
+        if (i, j) != (path[0][0], path[0][1]) and g[i][j] == '.':
+            # Make a copy of the original grid
+            temp = deepcopy(g)
+            # Place a new obstruction here
+            temp[i][j] = '#'
 
-    ans2 += helper(temp, [row, col], index)
+            # Test if this causes a loop when starting from the original state
+            if helper(temp, [path[0][0], path[0][1]], 0):
+                ans2 += 1
 
 print(ans2)
 
