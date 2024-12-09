@@ -1,6 +1,6 @@
 
 
-with open("test.txt", "r") as file:
+with open("Day9.txt", "r") as file:
     for line in file:
         s = line.strip()
 
@@ -50,7 +50,7 @@ for i, n in enumerate(s):
     if len(temp) > 0:
         arr2.append(temp)
 
-print(arr2)
+#print(arr2)
 
 
 # left = 0
@@ -78,17 +78,37 @@ print(arr2)
 
 
 
+i = len(arr2) -1
 
+while i >= 0:
+    right = arr2[i]
+    if right[0] == '.':
+        i -= 1
+        continue
+    for j in range(i):
+        left = arr2[j]
+        if left[0] != '.':
+            continue
+        elif len(left) >= len(right):
+            arr2.pop(j)
+            arr2.insert(j, right)
+            if len(left) > len(right):
+                arr2.insert(j + 1, ['.'] * (len(left) - len(right)))
+                i += 1
+            arr2[i] = ['.' for _ in right]
+            break
+    i -= 1
 
-print(arr2)
-ans2 = 0
-counter = 0
-for n in arr2:
-    for m in n:
-        if m != '.':
-            ans2 += int(m) * counter
-            counter += 1
+# Flatten `arr2` into a string
+newArr = "".join(str(m) if m != '.' else '.' for n in arr2 for m in n)
 
+# Calculate the checksum
+ans2 = sum(i * int(n) for i, n in enumerate(newArr) if n != '.')
+
+s = 0
+for i, n in enumerate(newArr):
+    if n != '.':
+        s += int(n) * i
+        print(int(n) * i, n, i)
 print(ans2)
-
 
