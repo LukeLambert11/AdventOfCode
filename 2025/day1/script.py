@@ -11,16 +11,16 @@ with open('input.txt', 'r') as file:
 
 
 def Part1(dirs): 
-	zeroCount = 0 
+	zeroLand = 0 
 	dial = 50
 
 	for d in dirs: 
 		dial = (dial + d) % 100
 
 		if dial == 0: 
-			zeroCount += 1
+			zeroLand += 1
 
-	return zeroCount
+	return zeroLand
 
 def Part2(dirs): 
 	zeroPass = 0 
@@ -28,11 +28,12 @@ def Part2(dirs):
 
 	for d in dirs: 
 
-		tempDial = dial + d 
-		if tempDial <= 0 and dial != 0: 
+		rawDial = dial + d 
+		# if 0 is reached or passed need to count
+		if rawDial <= 0 and dial != 0: 
 			zeroPass += 1
 		
-		zeroPass += abs(tempDial) // 100
+		zeroPass += abs(rawDial) // 100
 		dial = (dial + d) % 100
 
 	return zeroPass
