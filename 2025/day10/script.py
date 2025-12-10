@@ -1,10 +1,11 @@
 from functools import cache
+import pulp 
 
 lightPatterns = []
 buttons = []
 joltages = []
 
-with open('example.txt', 'r') as file: 
+with open('input.txt', 'r') as file: 
 	for line in file: 
 		line = line.strip()
 		line = line.split(' ')
@@ -55,6 +56,7 @@ def Part1():
 	return ans 
 
 
+# too large for recursive approach 
 def G(joltageTarget, joltageCurr, index, buttons): 
 
 	if joltageTarget == joltageCurr: 
@@ -81,12 +83,44 @@ def G(joltageTarget, joltageCurr, index, buttons):
 	return itersUsed
 
 
+def Solve2(joltage, buttons): 
+	M = len(joltage)
+	N = len(buttons)
+
+	prob = pulp.LpProblem("machine", pulp.LpMinimize)
+
+	# Variables: integer, >= 0
+	x = [
+		pulp.LpVariable(f"x_{j}", lowBound=0, cat="Integer")
+		for j in range(N)
+	]
+
+	# Objective: minimize total presses
+	prob += pulp.lpSum(x), "TotalPresses"
+
+	# Constraints: for each counter i
+	for i, t in enumerate(joltage):
+		prob += (
+			pulp.lpSum(
+				x[j] for j, group in enumerate(buttons) if i in group
+			) == t,
+			f"counter_{i}"
+		)
+
+	solver = pulp.PULP_CBC_CMD(msg=False)
+	prob.solve(solver)
+
+
+
+	presses = sum([int(pulp.value(var)) for var in x])
+	return presses
+
+
 def Part2(): 
 	ans = 0
 
 	for joltage, currButtons in zip(joltages, buttons): 
-		print(G(joltage, [0] * len(joltage), 0, currButtons))
-
+		ans += Solve2(joltage, currButtons)
 	return ans
 
 
