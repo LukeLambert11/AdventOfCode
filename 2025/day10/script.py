@@ -1,8 +1,10 @@
+from functools import cache
+
 lightPatterns = []
 buttons = []
 joltages = []
 
-with open('input.txt', 'r') as file: 
+with open('example.txt', 'r') as file: 
 	for line in file: 
 		line = line.strip()
 		line = line.split(' ')
@@ -53,18 +55,40 @@ def Part1():
 	return ans 
 
 
-def G(joltage, currButtons): 
+def G(joltageTarget, joltageCurr, index, buttons): 
 
+	if joltageTarget == joltageCurr: 
+		return 0
+
+	if index == len(buttons): 
+		return 10 ** 10
+
+
+	maxIter = 10 ** 10 
+	for b in buttons[index]: 
+		maxIter = min(maxIter, joltageTarget[b] - joltageCurr[b])
+
+	itersUsed = 10 ** 10
+	for multiple in range(maxIter+1): 
+		newJoltage = joltageCurr.copy()
+		for b in buttons[index]: 
+			newJoltage[b] += (1 * multiple)
+		
+		currUsed = multiple + G(joltageTarget, newJoltage, index+1, buttons)
+
+		itersUsed = min(itersUsed, currUsed)
+
+	return itersUsed
 
 
 def Part2(): 
 	ans = 0
 
 	for joltage, currButtons in zip(joltages, buttons): 
-		G(joltage, currButtons)
+		print(G(joltage, [0] * len(joltage), 0, currButtons))
 
 	return ans
 
 
-
 print(Part1())
+print(Part2())
