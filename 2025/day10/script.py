@@ -1,5 +1,6 @@
 lightPatterns = []
 buttons = []
+joltages = []
 
 with open('input.txt', 'r') as file: 
 	for line in file: 
@@ -19,24 +20,51 @@ with open('input.txt', 'r') as file:
 
 		buttons.append(currButtons)
 
+		jol = line[-1][1:-1]
+		jol = list(map(int, jol.split(',')))
+		joltages.append(jol)
+
+
+
+
+def F(target, curr, index, buttons): 
+
+	if curr == target: 
+		return 0 
+
+	if index == len(buttons): 
+		return 10 ** 10 
+
+	skip = F(target, curr, index+1, buttons)
+
+	toggled = curr ^ set(buttons[index])
+	take = 1 + F(target, toggled, index+1, buttons)
+
+	return min(skip, take)
 
 
 def Part1(): 
 
 	ans = 0
 
-	for lightPattern, button in zip(lightPattern, button): 
-
-
-		# count number of button presses needed
-
+	for lightPattern, currButtons in zip(lightPatterns, buttons): 
+		ans += F(set(lightPattern), set(), 0, currButtons)
 
 	return ans 
 
 
+def G(joltage, currButtons): 
+
+
 
 def Part2(): 
-	pass
+	ans = 0
+
+	for joltage, currButtons in zip(joltages, buttons): 
+		G(joltage, currButtons)
+
+	return ans
+
 
 
 print(Part1())
